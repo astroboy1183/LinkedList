@@ -90,22 +90,34 @@ class DoublyLinkedList:
 			print('linked list is empty!!')
 			return
 		else:
-			if(p is not None):
-				if(p.data==value):
+			if(p.data==value):
+				if(p.next is not None):
 					self.head=p.next
+					p.next.prev=None
+				else:
+					self.head=None
+					print('linked list is now empty!!')
+				return
+			else:
+				while(p is not None):
+					if(p.data==value):
+						break
+					p=p.next
+					# print('moving pointer')
+
+				if(p is None):
+					print('Element not found in linked list!!')
+					return
+				if(p.next is None):
+					p.prev.next=None
+					p.prev=None
 					p=None
 					return
-			while(p is not None):
-				if(p.data==value):
-					break
-				previous=p
-				p=p.next
-			if(p is None):
-				print('The node is not present!!')
-				return
-
-			previous.next=p.next
-			p=None
+				p.next.prev=p.prev
+				# print('deleting ',p.data)
+				p.prev.next=p.next
+				p=None
+			# print(self.PrintNodes())
 
 	def sumnodes(self):
 		p=self.head
