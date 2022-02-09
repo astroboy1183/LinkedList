@@ -164,24 +164,21 @@ class DoublyLinkedList:
 	
 	def sort(self,key):
 		p=self.head
-		q=self.head
+		# q=self.head
 		if(p is None):
 			print("No nodes in the linked list!!")
 			return
 		if(llist.count()==1):
 			print(self.PrintNodes())
 			return
+		p=p.next
 		while(p is not None):
-			q=p.next
-			while(q is not None):
-				if (key=='asc'):
-					if(p.data>q.data):
-						p.data,q.data=q.data,p.data
+			if (key=='asc'):
+				if(p.data>p.prev.data):
+						p.data,p.prev.data=p.prev.data,p.data
 				else:
-					if(p.data<q.data):
-						p.data,q.data=q.data,p.data
-
-				q=q.next
+					if(p.data<p.prev.data):
+						p.data,p.prev.data=p.prev.data,p.data
 			p=p.next
 		print(self.PrintNodes())
 
