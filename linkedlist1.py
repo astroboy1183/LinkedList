@@ -1,3 +1,5 @@
+import math
+
 class DoublyLinkedList:
 	def __init__(self):
 		
@@ -79,10 +81,14 @@ class DoublyLinkedList:
 
 			else:
 				p=p.next
-		if(p.next is None):
+		if(p is not None and p.next is None):
 			print('cannot insert node as previous value is not present!! Inserting node at END OF THE LIST!!')
 			llist.append(value)
 			return
+		# if(p.next is None):
+			
+		# 	llist.append(value)
+		# 	return
 
 	def deletenode(self,value):
 		p=self.head
@@ -164,21 +170,23 @@ class DoublyLinkedList:
 	
 	def sort(self,key):
 		p=self.head
-		# q=self.head
+		q=self.head
 		if(p is None):
 			print("No nodes in the linked list!!")
 			return
 		if(llist.count()==1):
 			print(self.PrintNodes())
 			return
-		p=p.next
 		while(p is not None):
-			if (key=='asc'):
-				if(p.data>p.prev.data):
-						p.data,p.prev.data=p.prev.data,p.data
+			q=p.next
+			while(q is not None):
+				if (key=='asc'):
+					if(p.data>q.data):
+						p.data,q.data=q.data,p.data
 				else:
-					if(p.data<p.prev.data):
-						p.data,p.prev.data=p.prev.data,p.data
+					if(p.data<=q.data):
+						p.data,q.data=q.data,p.data
+				q=q.next
 			p=p.next
 		print(self.PrintNodes())
 
@@ -261,7 +269,31 @@ class DoublyLinkedList:
 				p=p.next
 			print('duplicates deleted!!')
 			return
-	
+
+	def reverselist(self):
+		p=self.head
+		q=self.head
+
+		if(p is None):
+			print("no nodes in the list!!")
+			return
+		else:
+			while(q.next):
+				q=q.next
+			# pcount=0
+			# qcount=self.count()-1
+			exchanges = math.ceil(self.count()/2)
+			c=0
+			while(p!=q and c<=exchanges):
+				if(p.next is not None and q.prev is not None):
+					p.data,q.data = q.data,p.data
+					# pcount+=1
+					# qcount-=1
+					p=p.next
+					q=q.prev
+					c+=1
+				else:
+					return	
 
 class Node:
 	def __init__(self,data):
@@ -350,7 +382,7 @@ while(1):
 		llist.removeduplicates_sorted()
 
 	elif(inp=='13'):
-		print(llist.PrintNodes_Reverse())
+		llist.reverselist()
 	
 	elif(inp=='14'):
 		break

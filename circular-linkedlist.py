@@ -1,7 +1,8 @@
-class LinkedList:
+class CircularLinkedList:
 	def __init__(self):
 		
 		self.head=None
+
 
 	def PrintNodes(self):
 		
@@ -13,18 +14,24 @@ class LinkedList:
 
 		else:
 			out=''
-			while(p is not None):
-
-				out+=str(p.data)+'->'
-
+			print(p.data)
+			p=p.next
+			print(p.data)
+			p=p.next
+			print(p.data)
+			flag=0
+			while(p is not self.head or flag==0):
+				out+=str(p.data)+'<->'
+				print('printing')
 				p=p.next
+				flag=1
 
 			return out
 
 	def push(self,value):
 
 		p=self.head
-
+		q=self.head
 		if(p is None):
 			print('No nodes present , creating first node!!')
 			self.append(value)
@@ -33,33 +40,49 @@ class LinkedList:
 		new_node = Node(value)
 		new_node.next = self.head
 		self.head = new_node
+		while(q is not self.head):
+			q=q.next
+		q.next=new_node
 
 	def append(self,value):
 		p=self.head
 		if(p is None):
 			new_node = Node(value)
 			self.head = new_node
+			new_node.next=self.head
 			return
 		new_node = Node(value)
-		while(p.next is not None):
+		print('appending')
+		while(p is not self.head):
 			p=p.next
 		p.next=new_node
+		new_node.next=self.head
+		self.head.next=self.head
+		print('appended')
+
+
 
 	def insertafter(self,prev_value,value):
 		p=self.head
-		while(p is not None):
+		while(p.next is not None):
 			if(p.data==prev_value):
-				new_node=Node(value)
+				new_node = Node(value)
 				new_node.next=p.next
+				p.next.prev=new_node
+				new_node.prev=p
 				p.next=new_node
 				return
 
 			else:
 				p=p.next
-		if(p is None):
+		if(p is not None and p.next is None):
 			print('cannot insert node as previous value is not present!! Inserting node at END OF THE LIST!!')
 			llist.append(value)
 			return
+		# if(p.next is None):
+			
+		# 	llist.append(value)
+		# 	return
 
 	def deletenode(self,value):
 		p=self.head
@@ -67,22 +90,34 @@ class LinkedList:
 			print('linked list is empty!!')
 			return
 		else:
-			if(p is not None):
-				if(p.data==value):
+			if(p.data==value):
+				if(p.next is not None):
 					self.head=p.next
+					p.next.prev=None
+				else:
+					self.head=None
+					print('linked list is now empty!!')
+				return
+			else:
+				while(p is not None):
+					if(p.data==value):
+						break
+					p=p.next
+					# print('moving pointer')
+
+				if(p is None):
+					print('Element not found in linked list!!')
+					return
+				if(p.next is None):
+					p.prev.next=None
+					p.prev=None
 					p=None
 					return
-			while(p is not None):
-				if(p.data==value):
-					break
-				previous=p
-				p=p.next
-			if(p is None):
-				print('The node is not present!!')
-				return
-
-			previous.next=p.next
-			p=None
+				p.next.prev=p.prev
+				# print('deleting ',p.data)
+				p.prev.next=p.next
+				p=None
+			# print(self.PrintNodes())
 
 	def sumnodes(self):
 		p=self.head
@@ -143,9 +178,8 @@ class LinkedList:
 					if(p.data>q.data):
 						p.data,q.data=q.data,p.data
 				else:
-					if(p.data<q.data):
+					if(p.data<=q.data):
 						p.data,q.data=q.data,p.data
-
 				q=q.next
 			p=p.next
 		print(self.PrintNodes())
@@ -232,35 +266,43 @@ class LinkedList:
 
 	def reverselist(self):
 		p=self.head
-		q=None
-		r=None
+		q=self.head
+
 		if(p is None):
-			print('linked list is empty!!')
+			print("no nodes in the list!!")
 			return
 		else:
-			while(p is not None):
-				r=q
-				q=p
-				p=p.next
-				q.next=r
-			self.head=q
-	
+			while(q.next):
+				q=q.next
+			# pcount=0
+			# qcount=self.count()-1
+			exchanges = math.ceil(self.count()/2)
+			c=0
+			while(p!=q and c<=exchanges):
+				if(p.next is not None and q.prev is not None):
+					p.data,q.data = q.data,p.data
+					# pcount+=1
+					# qcount-=1
+					p=p.next
+					q=q.prev
+					c+=1
+				else:
+					return	
 
 class Node:
 	def __init__(self,data):
 		
 		self.data = data
 		
-		self.next=None
-
+		self.next = None
 
 
 
 if __name__=='__main__':
 
-	llist=LinkedList()
+	llist=CircularLinkedList()
 while(1):
-	inp=input('Please enter your choice:\n 1.insert 2.delete 3.count, 4.sum, 5.print nodes, 6.find maximum element, 7.Search element, 8.sort the linked list in ascending order,9.sort the linked list in descending order , 10. check if linked list is sorted, 11. remove duplicates unsorted ,12. remove duplicates sorted ,13.reverse the linked list , 14.exit\n')
+	inp=input('Please enter your choice:\n 1.insert 2.delete 3.count, 4.sum, 5.print nodes, 6.find maximum element, 7.Search element, 8.sort the linked list in ascending order,9.sort the linked list in descending order , 10. check if linked list is sorted, 11. remove duplicates unsorted ,12. remove duplicates sorted ,13. Print Nodes Reverse ,14.exit\n')
 	if(inp=='1'):
 		inp1 = input('1.insert at start, 2. insert after a particular node, 3.insert at end')
 		if(inp1=='1'):
@@ -330,58 +372,13 @@ while(1):
 
 	elif(inp=='12'):
 		llist.removeduplicates_sorted()
-	
+
 	elif(inp=='13'):
 		llist.reverselist()
-
+	
 	elif(inp=='14'):
 		break
 
 	else:
 		print('Please enter a valid option!!')
 		# llist.sample()
-	
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	# llist.push(1)
-	# llist.push(2)
-	# llist.push(5)
-	# llist.append(44)
-	# llist.insertafter(5,66)
-	# llist.insertafter(1,66)
-	# llist.insertafter(4,93)
-	# llist.deletenode(2)	
-	# llist.deletenode(66)
-	# print(llist.sumnodes())
-	# nodes=(llist.PrintNodes())
-	# print(nodes)
-
-
-
-	# first=Node(1)
-	# second=Node(2)
-	# third=Node(3)
-	
-	# llist.head = first
-	# first.next=second
-	# second.next=third
